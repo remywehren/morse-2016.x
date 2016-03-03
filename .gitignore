@@ -1,1 +1,8 @@
-*.agdai
+dist/
+build/
+nbproject/*.mk
+nbproject/*.bash
+nbproject/*.properties
+nbproject/private
+*.workspace
+*.pdsbak
