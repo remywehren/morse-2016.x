@@ -1,5 +1,10 @@
 #include <xc.h>
 #include <stdio.h>
+#include <pic18f25k22.h>
+#include "test.h"
+#include "file.h"
+#include "morse.h"
+#include "uart.h"
 
 /**
  * Bits de configuration:
@@ -13,53 +18,94 @@
 #pragma config WDTEN = OFF     // Watchdog inactif.
 #pragma config LVP = OFF       // Single Supply Enable bits off.
 
-/**
- * Fonction qui transmet un caractère à la EUSART.
- * Il s'agit de l'implémentation d'une fonction système qui est
- * appelée par <code>printf</code>.
- * Cette implémentation envoie le caractère à la UART. Si un terminal
- * est connecté aux sorties RX / TX, il affichera du texte.
- * @param data Le code ASCII du caractère à afficher.
-*/
-void putch(char data) {
-    while( ! TX1IF);
-    TXREG1 = data;
+#define CAPTURE_FLANC_MONTANT 1
+#define CAPTURE_FLANC_DESCENDANT 0
+
+#ifndef TEST
+
+void low_priority interrupt bassePriorite() {
+
+    if (INTCON3bits.INT1F) {
+        INTCON3bits.INT1F = 0;
+        if (PORTBbits.RB1) {
+            INTCON2bits.INTEDG1 = CAPTURE_FLANC_DESCENDANT;
+            morseLiberePioche();
+        } else {
+            INTCON2bits.INTEDG1 = CAPTURE_FLANC_MONTANT;
+            morseEnfoncePioche();
+        }
+    }
+    
+    if (PIR1bits.TMR1IF) {
+        TMR1 = 60535;
+        PIR1bits.TMR1IF = 0;
+        morseTicTac();
+    }
 }
 
 /**
- * Initialise la sortie 1 de la EUSART.
- * Si le UP est à 1MHz, le Virtual Terminal dans Proteus
- * doit être configuré comme suit:
- * - 1200 bauds.
- * - Transmission 8 bits.
- * - Bit de stop activé.
+ * Initialise les périphériques.
  */
-void initialiseEUSART() {
-    // Pour une fréquence de 1MHz, ceci donne 1200 bauds:
-    SPBRG = 12;
-    SPBRGH = 0;
-    // Configure RC6 et RC7 comme entrées digitales, pour que
-    // la EUSART puisse en prendre le contrôle:
-    TRISCbits.RC6 = 1;
-    TRISCbits.RC7 = 1;
+void initialiseHardware() {
     
-    // Configure la EUSART:
-    // (BRGH et BRG16 sont à leur valeurs par défaut)
-    // (TX9 est à sa valeur par défaut)
-    RCSTAbits.SPEN = 1;  // Active la EUSART.
-    TXSTAbits.SYNC = 0;  // Mode asynchrone.
-    TXSTAbits.TXEN = 1;  // Active l'émetteur.
+    initialiseUART1();
+    
+    // Active les interruptions de haute et de basse priorité:
+    RCONbits.IPEN = 1;
+    INTCONbits.GIEH = 1;
+    INTCONbits.GIEL = 1;
+
+    // Interruption INT1:
+    TRISBbits.RB1 = 1;              // Configure INT1 comme entrée
+    ANSELBbits.ANSB1 = 0;           // Désactive l'entrée analogique
+    INTCON2bits.INTEDG1 = CAPTURE_FLANC_DESCENDANT;
+    
+    INTCON3bits.INT1E = 1;          // Active les interruptions.
+    INTCON3bits.INT1IP = 0;         // Basse priorité.
+
+    // Temporisateur 1 -- à Fosc=1MHz, 20ms = compte jusqu'à 5000
+    T1CONbits.TMR1CS = 0;       // Source: FOSC / 4
+    T1CONbits.T1CKPS = 0;       // Diviseur de fréquence TPS = 4
+    T1CONbits.T1RD16 = 1;       // Temporisateur de 16 bits.
+    T1CONbits.TMR1ON = 1;       // Active le temporisateur 1    
+    
+    PIE1bits.TMR1IE = 1;        // Active les interruptions du T1 ...
+    IPR1bits.TMR1IP = 0;        // ... de basse priorité
+
 }
 
 /**
  * Point d'entrée du programme.
  */
 void main(void) {
-    unsigned char n;
+    initialiseHardware();
+    morseReinitialise();
+    fileReinitialise();
     
-    initialiseEUSART();
-
-    for (n = 0; n < 100; n++) {
-        printf("v1 Hello world: %d\r\n", n);
+    // Affiche les caractères de la file.
+    
+    while(1) {
+        if (!fileEstVide()) {
+            putch(fileDefile());
+        }
     }
 }
+#endif
+
+#ifdef TEST
+
+/**
+ * Point d'entrée des tests unitaires.
+ */
+void main() {
+    
+    initialiseTests();
+    
+    testFile();
+    testMorse();
+    
+    finaliseTests();
+    
+    while(1);
+}
+#endif
