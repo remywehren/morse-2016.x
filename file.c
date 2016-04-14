@@ -3,7 +3,7 @@
 #define FILE_TAILLE 10
 
 /** Espace de mémoire pour stoquer la file. */
-static char file[FILE_TAILLE];
+static char file[FILE_TAILLE]; 
 
 /**
  * Si il y a de la place dans la file, enfile un caractère.
@@ -26,7 +26,13 @@ char fileDefile() {
  * Indique si la file est vide.
  */
 char fileEstVide() {
-    // À implémenter...
+    unsigned char i;
+    
+    for (i = 0; i < FILE_TAILLE; i++) {
+        if (file[i] == ! '#') {     // Caractère '#' = 1 emplacement de la file vide.
+            return 1;
+        }
+    }
     return 0;
 }
 
