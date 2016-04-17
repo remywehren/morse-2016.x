@@ -16,31 +16,35 @@ void morsePoint() {
         case 0 : caractereMorse = 'E'; break;
         case 'A' : caractereMorse = 'R'; break;
         case 'B' : caractereMorse = '6'; break;
-        case 'C' : break;
+        //case 'C' : caractereMorse = 'c'; break;     // c
         case 'D' : caractereMorse = 'B'; break;
         case 'E' : caractereMorse = 'I'; break;
-        case 'F' : break;
+        case 'F' : caractereMorse = 'f'; break;     // f
         case 'G' : caractereMorse = 'Z'; break;
         case 'H' : caractereMorse = '5'; break;
         case 'I' : caractereMorse = 'S'; break;
-        case 'J' : break;
+        //case 'J' : caractereMorse = 'j'; break;     // j
         case 'K' : caractereMorse = 'C'; break;
-        case 'L' : break;
+        //case 'L' : caractereMorse = 'l'; break;     // l
         case 'M' : caractereMorse = 'G'; break;
         case 'N' : caractereMorse = 'D'; break;
-        case 'O' : break; // ?
-        case 'P' : break;
-        case 'Q' : break;
+        case 'O' : caractereMorse = 'o'; break;     // o
+        //case 'P' : caractereMorse = 'p'; break;     // p
+        //case 'Q' : caractereMorse = 'q'; break;     // q
         case 'R' : caractereMorse = 'L'; break;
         case 'S' : caractereMorse = 'H'; break;
         case 'T' : caractereMorse = 'N'; break;
         case 'U' : caractereMorse = 'F'; break;
-        case 'V' : break;
+        //case 'V' : caractereMorse = 'v'; break;     // v
         case 'W' : caractereMorse = 'P'; break;
         case 'X' : caractereMorse = '/'; break;
-        case 'Y' : break;
+        //case 'Y' : caractereMorse = 'y'; break;     // y
         case 'Z' : caractereMorse = '7'; break;
-    }       
+        //case 'u' : caractereMorse = 'u'; break;     // u -> u
+        case 'r' : caractereMorse = '+'; break;     // e -> +
+        case 'o' : caractereMorse = '8'; break;     // o -> 8
+        case '#' : caractereMorse = '9'; break;     // # -> 9
+        }       
 }
 /**
  * Appelée si la pioche morse a marqué une ligne.
@@ -50,30 +54,34 @@ void morseLigne() {
         case 0 : caractereMorse = 'T'; break;
         case 'A' : caractereMorse = 'W'; break;
         case 'B' : caractereMorse = '='; break;
-        case 'C' : break;
+        //case 'C' : caractereMorse = 'c'; break;       // C -> c
         case 'D' : caractereMorse = 'X'; break;
         case 'E' : caractereMorse = 'A'; break;
-        case 'F' : break;
+        //case 'F' : caractereMorse = 'f';  break;      // F -> f
         case 'G' : caractereMorse = 'Q'; break;
         case 'H' : caractereMorse = '4'; break;
         case 'I' : caractereMorse = 'U'; break;
         case 'J' : caractereMorse = '1'; break;
         case 'K' : caractereMorse = 'Y'; break;
-        case 'L' : break;
+        //case 'L' : caractereMorse = 'l'; break;       // L -> l
         case 'M' : caractereMorse = 'O'; break;
         case 'N' : caractereMorse = 'K'; break;
-        case 'O' : break;
-        case 'P' : break;
-        case 'Q' : break;
-        case 'R' : break;
+        //case 'O' : caractereMorse = '#'; break;       // O -> #
+        //case 'P' : caractereMorse = 'p';  break;      // P -> p
+        //case 'Q' : caractereMorse = 'q';  break;      // Q -> q
+        //case 'R' : caractereMorse = 'r';  break;      // R -> r
         case 'S' : caractereMorse = 'V'; break;
         case 'T' : caractereMorse = 'M'; break;
-        case 'U' : break;
+        //case 'U' : caractereMorse = 'u';  break;      // U -> u
         case 'V' : caractereMorse = '3'; break;
         case 'W' : caractereMorse = 'J'; break;
-        case 'X' : break;
-        case 'Y' : break;
-        case 'Z' : break;
+        //case 'X' : caractereMorse = 'x';  break;      // X -> x
+        //case 'Y' : caractereMorse = 'y';  break;      // Y -> y
+        //case 'Z' : caractereMorse = 'z';  break;      // Z -> z
+        case 'u' : caractereMorse = '2'; break;     // u -> 2
+        //case 'r' : caractereMorse = 'r'; break;       // r -> r
+        //case 'o' : caractereMorse = 'o'; break;       // o -> o
+        case '#' : caractereMorse = '0'; break;     // # -> 0
     }
 }
 
@@ -123,6 +131,7 @@ typedef enum {
  * Reçoit la notification que la pioche a été enfoncée.
  */
 void morseEnfoncePioche() {
+    
     //EtatPiocheMorse = PIOCHE_ENFONCEE;
 }
 
