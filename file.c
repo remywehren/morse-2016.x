@@ -3,14 +3,21 @@
 #define FILE_TAILLE 10
 
 /** Espace de mémoire pour stoquer la file. */
-static char file[FILE_TAILLE]; 
+static char file[FILE_TAILLE];
+static int *in, *out;
 
 /**
  * Si il y a de la place dans la file, enfile un caractère.
  * @param c Le caractère.
  */
-void fileEnfile(char c) {
-    // À implémenter...
+void fileEnfile(char c){
+    if (fileEstPleine()){
+        file[in]=c;
+        in++;
+        if (in > FILE_TAILLE){
+            in = 0;
+        }
+    }
 }
 
 /**
@@ -18,25 +25,34 @@ void fileEnfile(char c) {
  * @return Le caractère défilé, ou 0 si la file est vide.
  */
 char fileDefile() {
-    // À implémenter...
-    return 0;
+    if(!fileEstVide()){
+        char c;
+        c=file[out];
+        out++;
+        return c;
+        if(out > FILE_TAILLE){
+            out = 0;
+        }
+    }else{
+        return 0;
+    }
 }
-
 /**
  * Indique si la file est vide.
  */
 char fileEstVide() {
-    // À implémenter...
+    if(out = in){
     return 0;
+    }
 }
-
 /**
  * Indique si la file est pleine.
  */
 char fileEstPleine() {
-    // À implémenter...
+   
+    if( ((in-out)=(FILE_TAILLE-1))||((out+1) = in)){
     return 0;
-}
+    }
 
 /**
  * Vide et réinitialise la file.
