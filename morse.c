@@ -91,16 +91,28 @@ void morseLigne() {
  * @return Le caractère ASCII. Un '?' si la séquence est inconnue.
  */
 unsigned char morseDecodeSequence() {
-    // À implémenter...
-    return 0;
+    while (lignePointPause != CARACTERE_PAUSE) {
+        if ((caractereMorse >= 'A') && (caractereMorse >= 'Z')) {
+            return caractereMorse;
+        }
+        else if ((caractereMorse >= '0') && (caractereMorse >= '9')) {
+            return caractereMorse;
+        }
+        else if (caractereMorse == '+' || caractereMorse == '=' || caractereMorse == '/') {
+            return caractereMorse;
+        }
+        else {
+            return '?';
+        }
+    }
 }
 
 /**
  * Appelée si la pioche morse à marqué une pause.
  */
 unsigned char morsePause() {
-    // À implémenter...
-    return 0;
+    lignePointPause = CARACTERE_PAUSE;
+    return lignePointPause;
 }
 
 /**
@@ -119,6 +131,9 @@ typedef enum {
     CARACTERE_PAUSE = ' '
 } CaractereMorse;
 
+//** Déclaration de la variable lignePointPause. */
+CaractereMorse lignePointPause;
+
 /**
  * Décrit les états possibles de la pioche morse.
  */
@@ -127,26 +142,50 @@ typedef enum {
     PIOCHE_ENFONCEE
 } EtatPiocheMorse;
 
+/** Déclaration variable pioche. */
+EtatPiocheMorse pioche;
+
+//* Déclaration de la variable n. */
+long n;
+
 /**
  * Reçoit la notification que la pioche a été enfoncée.
  */
 void morseEnfoncePioche() {
-    
-    //EtatPiocheMorse = PIOCHE_ENFONCEE;
+    pioche = PIOCHE_ENFONCEE;
+    n = 0;
 }
 
 /**
  * Reçoit la notification que la pioche a été libéré.
  */
 void morseLiberePioche() {
-    //EtatPiocheMorse = PIOCHE_LIBRE;
+    pioche = PIOCHE_LIBRE;
+    if (n > MORSE_MAX_DUREE_POINT) {
+        morseLigne();
+        
+    }
+    else if (n <= MORSE_MAX_DUREE_POINT) {
+        morsePoint();
+    }
+    n = 0;
 }
 
 /**
  * Est appelée régulièrement, toutes les 20 ms.
  */
 void morseTicTac() {
-    // À implémenter...
+    switch (pioche) {
+        case (PIOCHE_LIBRE) :
+            if (n >= MORSE_MIN_DUREE_PAUSE) {
+                morsePause();
+                break;
+            }
+            n++;
+            break;
+        case (PIOCHE_ENFONCEE) : n++; break;
+    }
+        
 }
 
 #ifdef TEST
