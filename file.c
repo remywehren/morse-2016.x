@@ -22,9 +22,9 @@ static int in, out;
  */
 char fileEstVide() {
     if(out = in){
-    return '0';
+    return 0;
     }else{
-        return '1';
+        return 1;
     }
 }
 
@@ -65,7 +65,7 @@ char fileDefile() {
  */
 void fileReinitialise() {
     int i;
-    for (i=0;i=(FILE_TAILLE-1);i++){
+    for (i=0 ; i==(FILE_TAILLE-1) ; i++){
         file[i] = 0;
     }
 }
