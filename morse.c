@@ -5,8 +5,47 @@
 #define MORSE_MAX_DUREE_POINT 10
 #define MORSE_MIN_DUREE_PAUSE 30
 
-/** Défifnition du caratère selon la séquence. */
-static char caractereMorse = 0;
+/**
+ * Liste les caractères morse.
+ */
+typedef enum {
+    CARACTERE_LIGNE = '-',
+    CARACTERE_POINT = '.',
+    CARACTERE_PAUSE = ' '
+} CaractereMorse;
+
+/**
+ * Décrit les états possibles de la pioche morse.
+ */
+typedef enum {
+    PIOCHE_LIBRE,
+    PIOCHE_ENFONCEE
+} EtatPiocheMorse;
+
+// Déclaration variable pioche. */
+    EtatPiocheMorse pioche;
+
+// Déclaration de la variable lignePointPause. */
+    CaractereMorse lignePointPause;
+
+// Défifnition du caratère selon la séquence. */
+    static char caractereMorse;
+    
+// Déclaration de la variable n. */
+    long n;
+
+/**
+ * Réinitialise le décodeur morse.
+ */
+void morseReinitialise() {
+
+    caractereMorse = 0;
+    
+    n = 0;
+    
+    pioche = PIOCHE_LIBRE;
+
+}
 
 /**
  * Appelée si la pioche morse à marqué un point.
@@ -16,31 +55,31 @@ void morsePoint() {
         case 0 : caractereMorse = 'E'; break;
         case 'A' : caractereMorse = 'R'; break;
         case 'B' : caractereMorse = '6'; break;
-        //case 'C' : caractereMorse = 'c'; break;     // c
+        case 'C' : caractereMorse = '?'; break;
         case 'D' : caractereMorse = 'B'; break;
         case 'E' : caractereMorse = 'I'; break;
-        case 'F' : caractereMorse = 'f'; break;     // f
+        case 'F' : caractereMorse = '?'; break;
         case 'G' : caractereMorse = 'Z'; break;
         case 'H' : caractereMorse = '5'; break;
         case 'I' : caractereMorse = 'S'; break;
-        //case 'J' : caractereMorse = 'j'; break;     // j
+        case 'J' : caractereMorse = '?'; break;
         case 'K' : caractereMorse = 'C'; break;
-        //case 'L' : caractereMorse = 'l'; break;     // l
+        case 'L' : caractereMorse = '?'; break;
         case 'M' : caractereMorse = 'G'; break;
         case 'N' : caractereMorse = 'D'; break;
         case 'O' : caractereMorse = 'o'; break;     // o
-        //case 'P' : caractereMorse = 'p'; break;     // p
-        //case 'Q' : caractereMorse = 'q'; break;     // q
+        case 'P' : caractereMorse = '?'; break;
+        case 'Q' : caractereMorse = '?'; break;
         case 'R' : caractereMorse = 'L'; break;
         case 'S' : caractereMorse = 'H'; break;
         case 'T' : caractereMorse = 'N'; break;
         case 'U' : caractereMorse = 'F'; break;
-        //case 'V' : caractereMorse = 'v'; break;     // v
+        case 'V' : caractereMorse = '?'; break;
         case 'W' : caractereMorse = 'P'; break;
         case 'X' : caractereMorse = '/'; break;
-        //case 'Y' : caractereMorse = 'y'; break;     // y
+        case 'Y' : caractereMorse = '?'; break;
         case 'Z' : caractereMorse = '7'; break;
-        //case 'u' : caractereMorse = 'u'; break;     // u -> u
+        case 'u' : caractereMorse = '?'; break;
         case 'r' : caractereMorse = '+'; break;     // e -> +
         case 'o' : caractereMorse = '8'; break;     // o -> 8
         case '#' : caractereMorse = '9'; break;     // # -> 9
@@ -54,33 +93,33 @@ void morseLigne() {
         case 0 : caractereMorse = 'T'; break;
         case 'A' : caractereMorse = 'W'; break;
         case 'B' : caractereMorse = '='; break;
-        //case 'C' : caractereMorse = 'c'; break;       // C -> c
+        case 'C' : caractereMorse = '?'; break;
         case 'D' : caractereMorse = 'X'; break;
         case 'E' : caractereMorse = 'A'; break;
-        //case 'F' : caractereMorse = 'f';  break;      // F -> f
+        case 'F' : caractereMorse = '?'; break;
         case 'G' : caractereMorse = 'Q'; break;
         case 'H' : caractereMorse = '4'; break;
         case 'I' : caractereMorse = 'U'; break;
         case 'J' : caractereMorse = '1'; break;
         case 'K' : caractereMorse = 'Y'; break;
-        //case 'L' : caractereMorse = 'l'; break;       // L -> l
+        case 'L' : caractereMorse = 'L'; break;
         case 'M' : caractereMorse = 'O'; break;
         case 'N' : caractereMorse = 'K'; break;
-        //case 'O' : caractereMorse = '#'; break;       // O -> #
-        //case 'P' : caractereMorse = 'p';  break;      // P -> p
-        //case 'Q' : caractereMorse = 'q';  break;      // Q -> q
-        //case 'R' : caractereMorse = 'r';  break;      // R -> r
+        case 'O' : caractereMorse = '#'; break;         // O -> #
+        case 'P' : caractereMorse = '?'; break;
+        case 'Q' : caractereMorse = '?'; break;
+        case 'R' : caractereMorse = 'r'; break;
         case 'S' : caractereMorse = 'V'; break;
         case 'T' : caractereMorse = 'M'; break;
-        //case 'U' : caractereMorse = 'u';  break;      // U -> u
+        case 'U' : caractereMorse = 'u'; break;         // U -> u
         case 'V' : caractereMorse = '3'; break;
         case 'W' : caractereMorse = 'J'; break;
-        //case 'X' : caractereMorse = 'x';  break;      // X -> x
-        //case 'Y' : caractereMorse = 'y';  break;      // Y -> y
-        //case 'Z' : caractereMorse = 'z';  break;      // Z -> z
+        case 'X' : caractereMorse = '?'; break;
+        case 'Y' : caractereMorse = '?'; break;
+        case 'Z' : caractereMorse = '?'; break;
         case 'u' : caractereMorse = '2'; break;     // u -> 2
-        //case 'r' : caractereMorse = 'r'; break;       // r -> r
-        //case 'o' : caractereMorse = 'o'; break;       // o -> o
+        case 'r' : caractereMorse = '?'; break;
+        case 'o' : caractereMorse = '?'; break;
         case '#' : caractereMorse = '0'; break;     // # -> 0
     }
 }
@@ -105,6 +144,7 @@ unsigned char morseDecodeSequence() {
             return '?';
         }
     }
+    return 0;
 }
 
 /**
@@ -114,39 +154,6 @@ unsigned char morsePause() {
     lignePointPause = CARACTERE_PAUSE;
     return lignePointPause;
 }
-
-/**
- * Réinitialise le décodeur morse.
- */
-void morseReinitialise() {
-    // À implémenter...
-}
-
-/**
- * Liste les caractères morse.
- */
-typedef enum {
-    CARACTERE_LIGNE = '-',
-    CARACTERE_POINT = '.',
-    CARACTERE_PAUSE = ' '
-} CaractereMorse;
-
-//** Déclaration de la variable lignePointPause. */
-CaractereMorse lignePointPause;
-
-/**
- * Décrit les états possibles de la pioche morse.
- */
-typedef enum {
-    PIOCHE_LIBRE,
-    PIOCHE_ENFONCEE
-} EtatPiocheMorse;
-
-/** Déclaration variable pioche. */
-EtatPiocheMorse pioche;
-
-//* Déclaration de la variable n. */
-long n;
 
 /**
  * Reçoit la notification que la pioche a été enfoncée.
