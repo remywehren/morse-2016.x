@@ -6,25 +6,29 @@
 
 /** Espace de mémoire pour stoquer la file. */
 static char file[FILE_TAILLE];
-static int in, out;
+static char in, out;
 
 /**
  * Indique si la file est pleine.
  */char fileEstPleine() {
    
-    if(((in-out)==(FILE_TAILLE-1))||((out+1) == in)){
+    if((in-out)==(FILE_TAILLE)) { // || ((out+1) == in))
+        return 255;       // file est pleine
     }
-    return '0';
+    else {
+        return 0;     // file est pas pleine
+    }
 }
      
  /**
  * Indique si la file est vide.
  */
 char fileEstVide() {
-    if(out = in){
-    return 0;
-    }else{
-        return 1;
+    if(out == in) {
+    return 255;     // file est vide
+    }
+    else {
+        return 0;   // file est pas vide
     }
 }
 
@@ -32,10 +36,8 @@ char fileEstVide() {
  * Si il y a de la place dans la file, enfile un caractère.
  * @param c Le caractère.
  */
-void fileEnfile(char c){
-   
-
-    if (fileEstPleine()){
+void fileEnfile(char c) {
+    if (!fileEstPleine()) {
         file[in] = c;
         in++;
         if (in > FILE_TAILLE){
@@ -50,7 +52,7 @@ void fileEnfile(char c){
  */
 char fileDefile() {
     char c;
-    if(!fileEstVide()){
+    if(!fileEstVide()) {
         c = file[out];
         out++;
         if (out > FILE_TAILLE){
@@ -65,9 +67,12 @@ char fileDefile() {
  */
 void fileReinitialise() {
     int i;
-    for (i=0 ; i==(FILE_TAILLE-1) ; i++){
+    for (i = 0 ; i <= FILE_TAILLE ; i++) {
         file[i] = 0;
     }
+    // Réinitalise la file
+    in = 0;
+    out = 0;
 }
 
    
@@ -119,8 +124,6 @@ void testDebordePuisRecupereLesCaracteres() {
     while(!fileEstVide()) {
         c = fileDefile();
     }
-    fileEnfile(1);      // Ces caractères sont ignorés...
-    fileEnfile(1);      // ... car la file est pleine.
 
     testeEgaliteEntiers("FDB003", c, FILE_TAILLE);
 }

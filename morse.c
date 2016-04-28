@@ -38,13 +38,9 @@ typedef enum {
  * Réinitialise le décodeur morse.
  */
 void morseReinitialise() {
-
     caractereMorse = 0;
-    
     n = 0;
-    
     pioche = PIOCHE_LIBRE;
-
 }
 
 /**
@@ -140,6 +136,9 @@ unsigned char morseDecodeSequence() {
         else if (caractereMorse == '+' || caractereMorse == '=' || caractereMorse == '/') {
             return caractereMorse;
         }
+        //else if (caractereMorse == 'u' || caractereMorse == 'r' || caractereMorse == 'o'|| caractereMorse == '#') {
+        //    return '?';
+        //}
         else {
             return '?';
         }
@@ -151,8 +150,13 @@ unsigned char morseDecodeSequence() {
  * Appelée si la pioche morse à marqué une pause.
  */
 unsigned char morsePause() {
-    lignePointPause = CARACTERE_PAUSE;
-    return lignePointPause;
+    static char charTemp;
+    charTemp = caractereMorse;
+    if (charTemp == 'u' || charTemp == 'r' || charTemp == 'o'|| charTemp == '#') {
+            charTemp = '?';
+        }
+    caractereMorse = 0;
+    return charTemp;
 }
 
 /**
@@ -170,10 +174,11 @@ void morseLiberePioche() {
     pioche = PIOCHE_LIBRE;
     if (n > MORSE_MAX_DUREE_POINT) {
         morseLigne();
-        
+        fileEnfile(CARACTERE_POINT);
     }
     else if (n <= MORSE_MAX_DUREE_POINT) {
         morsePoint();
+        fileEnfile(CARACTERE_LIGNE);
     }
     n = 0;
 }
@@ -363,8 +368,8 @@ void testMorse() {
     testMorseDecodeToutAlphabet();
     
     testMorseDetecteImpulsionsU();
-    testMorseDetecteImpulsionsET();    
-    testMorseIgnorePauseInitiale();
+    /*testMorseDetecteImpulsionsET();    
+    testMorseIgnorePauseInitiale();*/
 }
 
 #endif
