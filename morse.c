@@ -32,14 +32,14 @@ typedef enum {
     static char caractereMorse;
     
 // Déclaration de la variable n. */
-    long n;
+    long ni;
 
 /**
  * Réinitialise le décodeur morse.
  */
 void morseReinitialise() {
     caractereMorse = 0;
-    n = 0;
+    ni = 0;
     pioche = PIOCHE_LIBRE;
 }
 
@@ -164,7 +164,7 @@ unsigned char morsePause() {
  */
 void morseEnfoncePioche() {
     pioche = PIOCHE_ENFONCEE;
-    n = 0;
+    ni = 0;
 }
 
 /**
@@ -172,33 +172,36 @@ void morseEnfoncePioche() {
  */
 void morseLiberePioche() {
     pioche = PIOCHE_LIBRE;
-    if (n > MORSE_MAX_DUREE_POINT) {
+    if (ni > MORSE_MAX_DUREE_POINT) {
         morseLigne();
-        fileEnfile(CARACTERE_POINT);
-    }
-    else if (n <= MORSE_MAX_DUREE_POINT) {
-        morsePoint();
         fileEnfile(CARACTERE_LIGNE);
     }
-    n = 0;
+    else if (ni <= MORSE_MAX_DUREE_POINT) {
+        morsePoint();
+        fileEnfile(CARACTERE_POINT);
+    }
+    ni = 0;
 }
 
 /**
  * Est appelée régulièrement, toutes les 20 ms.
  */
 void morseTicTac() {
+    
     switch (pioche) {
         case (PIOCHE_LIBRE) :
-            if (n >= MORSE_MIN_DUREE_PAUSE) {
-                morsePause();
-                break;
+            ni++;
+            if (ni >= MORSE_MIN_DUREE_PAUSE) {
+                fileEnfile(CARACTERE_PAUSE);
+                fileEnfile(morsePause());
+                fileEnfile('\r');
+                fileEnfile('\n');
+                break; 
             }
-            n++;
             break;
-        case (PIOCHE_ENFONCEE) : n++; break;
+        case (PIOCHE_ENFONCEE) : ni++; break;
+        }  
     }
-        
-}
 
 #ifdef TEST
 
@@ -368,8 +371,8 @@ void testMorse() {
     testMorseDecodeToutAlphabet();
     
     testMorseDetecteImpulsionsU();
-    /*testMorseDetecteImpulsionsET();    
-    testMorseIgnorePauseInitiale();*/
+    testMorseDetecteImpulsionsET();    
+    testMorseIgnorePauseInitiale();
 }
 
 #endif
